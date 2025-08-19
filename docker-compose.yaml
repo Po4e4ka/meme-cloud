@@ -1,0 +1,61 @@
+services:
+  meme-php:
+    container_name: meme-php
+    build:
+      dockerfile: containers/Dockerfile
+      args:
+        USER_ID: 1000
+        GROUP_ID: 1000
+        USER_NAME: $USER
+    volumes:
+      - ./:/var/www
+    command:
+      - php
+      - artisan
+      - serve
+      - --host
+      - 0.0.0.0
+    ports:
+      - '8000:8000'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  meme-node:
+    container_name: meme-node
+    image: node:24-alpine3.21
+    volumes:
+      - ./:/var/www
+    working_dir: /var/www
+    command:
+      - npm
+      - run
+      - build
+
+  meme-db:
+    container_name: meme-db
+    image: percona:latest
+    environment:
+      MYSQL_USER: alex
+      MYSQL_PASSWORD: 1
+      MYSQL_DATABASE: meme
+      MYSQL_ROOT_PASSWORD: 1
+    ports:
+      - 3306:3306
+    volumes:
+      - ./containers/init-scripts/percona-init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./var/data/percona:/var/lib/mysql
+      - ./var/logs/percona:/var/log/mysql
+      - /etc/localtime:/etc/localtime:ro
+
+  meme-minio:
+    container_name: meme-minio
+    image: minio/minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: alex
+      MINIO_ROOT_PASSWORD: Miha1000
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    volumes:
+      - ./var/data/minio:/data
