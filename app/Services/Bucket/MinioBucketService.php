@@ -22,7 +22,7 @@ readonly class MinioBucketService
 
         return Storage::build([
             'driver' => 's3',
-            'name' => $bucket->name,
+            'bucket' => $bucket->name,
             'key' => $bucket->access_key,
             'secret' => $bucket->secret_key,
             'region' => 'us-east-1',

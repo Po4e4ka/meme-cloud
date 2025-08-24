@@ -1,8 +1,6 @@
 services:
   meme-php:
     container_name: meme-php
-    environment:
-      PHP_IDE_CONFIG: serverName=_
     build:
       dockerfile: containers/Dockerfile
       args:

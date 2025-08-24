@@ -15,9 +15,6 @@ class BucketController extends Controller
 
     public function upload(Request $request): JsonResponse
     {
-        return response()->json([
-            'path' => 'true',
-        ]);
         $path = $this->minioBucketService->putFile($request->file('file'));
 
         return response()->json([

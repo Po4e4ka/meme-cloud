@@ -4,6 +4,8 @@ namespace MemeCloud\Models;
 
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -35,6 +37,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
+        'bucket_id',
         'remember_token',
     ];
 
@@ -50,5 +53,10 @@ class User extends Authenticatable
             'password' => 'hashed',
             'bucket_id' => 'integer',
         ];
+    }
+
+    public function bucket(): BelongsTo
+    {
+        return $this->belongsTo(Bucket::class);
     }
 }
