@@ -1,4 +1,4 @@
-FROM php:8.4.3-zts-bullseye
+FROM unit:php8.4
 
 RUN apt update && apt install -y \
     zip \
@@ -31,18 +31,19 @@ RUN groupmod -g 31 dialout
 
 ARG USER_ID
 ARG GROUP_ID
-ARG USER_NAME
 
-RUN addgroup --gid $GROUP_ID $USER_NAME \
-    && adduser --gid $GROUP_ID --uid $USER_ID --home /home/$USER_NAME/ --disabled-password $USER_NAME
+RUN groupmod -g $GROUP_ID unit  \
+    && usermod -d /var/www/ -u $USER_ID unit
 
 WORKDIR /var/www
 
-RUN chown $USER_NAME:$USER_NAME /var/www/
+RUN chown unit:unit /var/www/
 
-COPY --chown=$USER_NAME:$USER_NAME ./composer.* ./
+COPY --chown=unit:unit ./composer.* ./
 
-USER $USER_NAME
+RUN chown -R unit:unit /var/lib/unit /var/run/
+
+USER unit
 
 RUN composer global require laravel/installer
 RUN echo export PATH=~/.composer/vendor/bin:$PATH > ~/.bash_profile

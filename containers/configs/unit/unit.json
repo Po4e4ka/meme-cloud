@@ -1,0 +1,44 @@
+{
+  "listeners": {
+    "*:80": {
+      "pass": "routes"
+    }
+  },
+
+  "routes": [
+    {
+      "match": {
+        "uri": [
+          "/assets/*",
+          "/static/*"
+        ]
+      },
+
+      "action": {
+        "share":"/var/www/public$uri"
+      }
+    },
+    {
+      "action": {
+        "share": "/var/www/public$uri",
+        "fallback": {
+          "pass": "applications/meme-cloud/index"
+        }
+      }
+    }
+  ],
+
+  "applications": {
+    "meme-cloud": {
+      "type": "php",
+      "user": "unit",
+      "group": "unit",
+      "targets": {
+        "index": {
+          "root": "/var/www/public/",
+          "script": "index.php"
+        }
+      }
+    }
+  }
+}
