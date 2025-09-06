@@ -4,6 +4,7 @@ namespace MemeCloud\Services\Bucket;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Storage;
+use MemeCloud\Models\Media;
 use MemeCloud\Models\User;
 
 readonly class MinioBucketService
@@ -34,17 +35,24 @@ readonly class MinioBucketService
     /**
      * Сохранить файл (видео/картинку).
      */
-    public function putFile($file): string
+    public function putMedia(Media $media): string
     {
-        return $this->getDisk()->putFile($this->getFolderByUser(), $file);
+        $path = $this->getDisk()->putFileAs(
+            $media->getBucketFolder(),
+            $media->file,
+            $media->getBucketName(),
+        );
+        $media->save();
+
+        return $path;
     }
 
     /**
      * Получить публичный URL (если bucket публичный).
      */
-    public function url(string $file_path): string
+    public function url(Media $media): string
     {
-        return $this->getDisk()->url($this->getFolderByUser() . $file_path);
+        return $this->getDisk()->url($media->getFullBacketPath());
     }
 
     /**
@@ -53,10 +61,5 @@ readonly class MinioBucketService
     public function temporaryUrl(string $file_path, int $minutes = 10): string
     {
         return $this->getDisk()->temporaryUrl($this->getFolderByUser() . $file_path, now()->addMinutes($minutes));
-    }
-
-    private function getFolderByUser()
-    {
-        return "user_{$this->user->id}/";
     }
 }

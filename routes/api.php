@@ -1,6 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use MemeCloud\Http\Controllers\Bucket\BucketController;
+use MemeCloud\Http\Controllers\Bucket\MediaController;
 
-Route::post('/upload', [BucketController::class, 'upload'])->name('upload');
+Route::post('/upload', [MediaController::class, 'upload'])->name('upload');
