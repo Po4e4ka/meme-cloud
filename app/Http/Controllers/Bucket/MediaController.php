@@ -8,10 +8,10 @@ use MemeCloud\Http\Controllers\Controller;
 use MemeCloud\Services\Media\MediaService;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class MediaController extends Controller
+readonly class MediaController extends Controller
 {
     public function __construct(
-        private readonly MediaService $mediaService,
+        private MediaService $mediaService,
     ) {}
 
     public function upload(Request $request): JsonResponse

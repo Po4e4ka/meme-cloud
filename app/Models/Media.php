@@ -37,9 +37,9 @@ class Media extends Model
         return "user_{$this->user->id}/";
     }
 
-    public function getFullBacketPath(): string
+    public function getFullBucketPath(): string
     {
-        return $this->getBucketFolder() . $this->getBucketName();
+        return 'http://minio:9000/' . $this->getBucketFolder() . $this->getBucketName();
     }
 
 

@@ -52,7 +52,7 @@ readonly class MinioBucketService
      */
     public function url(Media $media): string
     {
-        return $this->getDisk()->url($media->getFullBacketPath());
+        return $this->getDisk()->url($media->getFullBucketPath());
     }
 
     /**

@@ -1,7 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
-import UploadForm from "@/pages/files/upload";
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -22,7 +21,6 @@ export default function Dashboard() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Meme Cloud" />
-            <UploadForm />
             {/* Контейнер с карточками */}
             <div className="flex justify-center p-4">
                 <div className="flex flex-wrap gap-4 max-w-screen-lg">
