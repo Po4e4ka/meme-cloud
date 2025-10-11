@@ -1,8 +1,10 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
-import { resolve } from 'node:path';
+import path, { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
+const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
     plugins: [
@@ -14,6 +16,13 @@ export default defineConfig({
         react(),
         tailwindcss(),
     ],
+    server: {
+        host: '0.0.0.0',
+        port: 5173,
+        hmr: {
+            host: 'host.docker.internal',
+        },
+    },
     esbuild: {
         jsx: 'automatic',
     },

@@ -27,7 +27,7 @@ services:
     ports:
       - '5173:5173'
     command: >
-      sh -c "npm run dev ---host 0.0.0.0"
+      sh -c "npm run dev"
 
   meme-db:
     container_name: meme-db
@@ -42,7 +42,7 @@ services:
       MYSQL_DATABASE: meme
       MYSQL_ROOT_PASSWORD: 1
     ports:
-      - 3306:3306
+      - "3306:3306"
     volumes:
       - ./containers/init-scripts/percona-init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./var/data/percona:/var/lib/mysql

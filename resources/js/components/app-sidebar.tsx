@@ -17,7 +17,7 @@ const mainNavItems: NavItem[] = [
 
 const footerNavItems: NavItem[] = [
     {
-        title: ':Жопка',
+        title: 'Жопка',
         href: 'https://sun9-12.userapi.com/s/v1/ig2/JTUpVhbYtz0LXe0CKsZSQgWbDpfryH1mk9cyLc6k1FgzB3TQ0y1UreR3r17yIs0DRSsEy1iCO_1pSF9jP6pl-pt2.jpg?size=400x400&quality=95&crop=0,0,432,432&ava=1',
         icon: Apple,
     },
