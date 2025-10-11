@@ -24,3 +24,6 @@ yarn-error.log
 /.zed
 /var/
 /.composer/
+
+*storybook.log
+storybook-static

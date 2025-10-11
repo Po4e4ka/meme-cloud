@@ -24,9 +24,10 @@ services:
     volumes:
       - ./:/var/www
     working_dir: /var/www
-    command:
-      - tail
-      - -f
+    ports:
+      - '5173:5173'
+    command: >
+      sh -c "npm run dev ---host 0.0.0.0"
 
   meme-db:
     container_name: meme-db
@@ -59,3 +60,16 @@ services:
       - '9001:9001'
     volumes:
       - ./var/data/minio:/data
+
+  meme-storybook:
+    container_name: meme-storybook
+    image: node:24-alpine3.21
+    working_dir: /var/www
+    user: 1000:1000
+    volumes:
+      - ./:/var/www
+    ports:
+      - "6006:6006"
+    command: >
+      sh -c "npm install && npm run storybook -- --no-open"
+
