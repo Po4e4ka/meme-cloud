@@ -1,8 +1,8 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
-import { MemeCardProps } from "@/components/dashboard-card";
-import MemeCardContainer from "@/components/dashboard-card-container";
+import { MemeCardProps } from "@/components/dashboard/meme-card";
+import MemeCardContainer from "@/components/dashboard/meme-card-container";
 
 const breadcrumbs: BreadcrumbItem[] = [
     {

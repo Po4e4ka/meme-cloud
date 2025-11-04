@@ -1,4 +1,4 @@
-import MemeCard, {MemeCardProps} from "@/components/dashboard-card";
+import MemeCard, {MemeCardProps} from "@/components/dashboard/meme-card";
 
 export type MemeCardContainerProps = {
     memes: MemeCardProps[]
