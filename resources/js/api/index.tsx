@@ -1,7 +1,6 @@
 import { getApiBaseUrl } from "@/api/config";
-import { ROUTE } from "@/api/routes";
 import { VERSION } from "@/api/versions";
-import {MemeController} from "@/api/controllers/MemeController";
+import { MemeController } from "@/api/controllers/MemeController";
 
 
 export class InternalApi {
@@ -18,7 +17,7 @@ export class InternalApi {
     }
     
     public meme(): MemeController {
-        return new MemeController(this.getBasePath());
+        return new MemeController(this.getBasePath() + '/media');
     }
     
     private getBasePath() {

@@ -11,6 +11,7 @@ use MemeCloud\Models\User;
 use MemeCloud\Services\Bucket\MinioBucketService;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 readonly class MediaService
 {
@@ -55,5 +56,17 @@ readonly class MediaService
         $media->hash = $hash;
 
         return $media;
+    }
+
+    public function delete(mixed $id): bool
+    {
+        $media = Media::find($id);
+        if (!$media) {
+            throw new NotFoundHttpException('Media not found');
+        }
+        
+        $media->delete();
+        
+        return true;
     }
 }

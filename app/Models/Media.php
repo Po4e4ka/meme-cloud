@@ -4,6 +4,7 @@ namespace MemeCloud\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\UploadedFile;
 use MemeCloud\Enums\EExtType;
 use MemeCloud\Enums\EMediaType;
@@ -18,6 +19,8 @@ use MemeCloud\Enums\EMediaType;
  */
 class Media extends Model
 {
+    use SoftDeletes;
+    
     public ?UploadedFile $file = null;
     protected $fillable = [
         'name',

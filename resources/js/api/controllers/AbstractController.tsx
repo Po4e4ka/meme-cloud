@@ -1,5 +1,3 @@
-import { ROUTE } from "@/api/routes";
-
 export class AbstractController {
     protected readonly basePath: string;
 
@@ -7,9 +5,9 @@ export class AbstractController {
         this.basePath = basePath;
     }
 
-    protected async request(path: ROUTE, options: Record<string, any> = {}): Promise<Response> {
+    protected async request(path: string, options: Record<string, any> = {}): Promise<Response> {
         const defaultOptions: RequestInit = {
-            method: 'GET',
+            method: options.method ?? 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 ...options.headers,

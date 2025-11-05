@@ -6,10 +6,12 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use MemeCloud\Http\Controllers\Controller;
 use MemeCloud\Services\Media\MediaService;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 readonly class MediaController extends Controller
 {
+    public const string API_PATH = 'media/';
     public function __construct(
         private MediaService $mediaService,
     ) {}
@@ -23,5 +25,16 @@ readonly class MediaController extends Controller
         $media = $this->mediaService->upload($file);
 
         return response()->json($media);
+    }
+
+    public function delete(?int $id = null): JsonResponse
+    {
+        if (!$id) {
+            throw new BadRequestHttpException('id is required');
+        }
+
+        $this->mediaService->delete($id);
+
+        return response()->json(status: 204);
     }
 }
