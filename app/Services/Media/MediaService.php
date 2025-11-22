@@ -50,7 +50,7 @@ readonly class MediaService
         $media = new Media();
         $media->user()->associate($this->user);
         $media->file = $file;
-        $media->name = 'testname.png';
+        $media->name = 'unnamed.png';
         $media->ext  = EExtType::fromMime($file->getClientMimeType());
         $media->type = EMediaType::fromExt($media->ext);
         $media->hash = $hash;

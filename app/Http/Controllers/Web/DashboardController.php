@@ -16,5 +16,10 @@ readonly class DashboardController extends Controller
             'memes' => $resources->resolve()
         ]);
     }
+    
+    public function newMeme()
+    {
+        return Inertia::render('memes/new');
+    }
 }
 
