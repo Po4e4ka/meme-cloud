@@ -1,6 +1,3 @@
-// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
-import storybook from "eslint-plugin-storybook";
-
 import js from '@eslint/js';
 import prettier from 'eslint-config-prettier';
 import react from 'eslint-plugin-react';
@@ -38,4 +35,4 @@ export default [js.configs.recommended, ...typescript.configs.recommended, {
 }, {
     ignores: ['vendor', 'node_modules', 'public', 'bootstrap/ssr', 'tailwind.config.js'],
 }, // Turn off all rules that might conflict with Prettier
-prettier, ...storybook.configs["flat/recommended"]];
+prettier];
