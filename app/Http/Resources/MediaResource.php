@@ -19,7 +19,10 @@ class MediaResource extends JsonResource
         return [
             'id'    => $this->id,
             'title' => $this->name,
-            'image_url'   => $this->getFullBucketPath(),
+            'image_url' => route('static.media', [
+                'hash' => $this->hash,
+                'ext' => ltrim($this->ext->stringValue(), '.'),
+            ]),
         ];
     }
 }

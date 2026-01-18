@@ -34,5 +34,7 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-
+    'minio' => [
+        'entrypoint' => env('MINIO_ENDPOINT') . '/'
+    ]
 ];

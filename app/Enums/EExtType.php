@@ -30,6 +30,19 @@ enum EExtType: int
         };
     }
 
+    public static function fromExtension(string $extension): self
+    {
+        $normalized = '.' . ltrim(strtolower($extension), '.');
+
+        foreach (self::cases() as $case) {
+            if ($case->stringValue() === $normalized) {
+                return $case;
+            }
+        }
+
+        throw new BadRequestHttpException('unknown type');
+    }
+
     public function stringValue(): string
     {
         return self::MAPPING[$this->value] ?? throw new RuntimeException('unknown type');

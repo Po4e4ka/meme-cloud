@@ -55,11 +55,13 @@ readonly class MinioBucketService
         return $this->getDisk()->url($media->getFullBucketPath());
     }
 
-    /**
-     * Получить временную ссылку (если bucket приватный).
-     */
-    public function temporaryUrl(string $file_path, int $minutes = 10): string
+    public function readStream(Media $media)
     {
-        return $this->getDisk()->temporaryUrl($this->getFolderByUser() . $file_path, now()->addMinutes($minutes));
+        return $this->getDisk()->readStream($media->getFullBucketPath());
+    }
+
+    public function mimeType(Media $media): string
+    {
+        return $this->getDisk()->mimeType($media->getFullBucketPath()) ?? 'application/octet-stream';
     }
 }

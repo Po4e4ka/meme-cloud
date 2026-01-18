@@ -1,8 +1,8 @@
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import { BreadcrumbItem, HeaderAction } from '@/types';
-import { ArrowLeft, Check } from "lucide-react";
-import { useState } from "react";
+import { ArrowLeft, Check, Crop, FileImage, Monitor, Ruler, Upload } from "lucide-react";
+import React, { useRef, useState } from "react";
 import { InternalApi } from "@/api";
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -24,19 +24,32 @@ export default function NewMeme() {
     const [title, setTitle] = useState("");
     const [file, setFile] = useState<File | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
+    const [isDragging, setIsDragging] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-        const selected = e.target.files?.[0];
+        handleSelectedFile(e.target.files?.[0] ?? null);
+    }
+
+    function handleSelectedFile(selected: File | null) {
         if (!selected) return;
 
         setFile(selected);
         setPreview(URL.createObjectURL(selected));
     }
+
+    function handleDrop(e: React.DragEvent<HTMLDivElement>) {
+        e.preventDefault();
+        setIsDragging(false);
+        const droppedFile = e.dataTransfer.files?.[0] ?? null;
+        handleSelectedFile(droppedFile);
+    }
+
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
 
         if (!file) {
-            alert('Выберите изображение');
+            alert('Выберите файл');
             return;
         }
 
@@ -49,7 +62,7 @@ export default function NewMeme() {
         });
         const memeController = (new InternalApi).v1().meme()
 
-        const result = memeController.new(formData);
+        memeController.new(formData);
     }
 
     const [tagInput, setTagInput] = useState("");
@@ -88,8 +101,90 @@ export default function NewMeme() {
                 <h1 className="text-2xl font-bold mb-6">Создать новый мем</h1>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                        <label className="block font-medium mb-2">Файл</label>
+                        <div
+                            onClick={() => fileInputRef.current?.click()}
+                            onDragOver={(e) => {
+                                e.preventDefault();
+                                setIsDragging(true);
+                            }}
+                            onDragLeave={() => setIsDragging(false)}
+                            onDrop={handleDrop}
+                            className={`border-2 border-dashed rounded-lg px-4 py-8 text-center cursor-pointer transition ${
+                                isDragging ? "border-blue-500 bg-blue-50" : "border-gray-300 bg-gray-50"
+                            }`}
+                        >
+                            <div className="flex flex-col items-center gap-2">
+                                <div className="rounded-full bg-white p-3 shadow-sm">
+                                    <Upload size={20} />
+                                </div>
+                                <div className="font-medium">Перетащите файл сюда</div>
+                                <div className="text-sm text-gray-500">или нажмите, чтобы выбрать</div>
+                                {file && (
+                                    <div className="text-sm text-gray-600">{file.name}</div>
+                                )}
+                            </div>
+                        </div>
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            onChange={handleFileChange}
+                            accept="image/*,video/*"
+                            className="hidden"
+                        />
+                    </div>
 
-                    {/* Название */}
+                    <div className="grid grid-cols-2 gap-3">
+                        <div className="flex items-center gap-3 rounded-lg border bg-white p-3">
+                            <Ruler size={18} className="text-gray-600" />
+                            <div>
+                                <div className="text-sm font-medium">Размер</div>
+                                <div className="text-xs text-gray-500">до 50 МБ</div>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-3 rounded-lg border bg-white p-3">
+                            <FileImage size={18} className="text-gray-600" />
+                            <div>
+                                <div className="text-sm font-medium">Формат</div>
+                                <div className="text-xs text-gray-500">JPG, PNG, GIF, MP4</div>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-3 rounded-lg border bg-white p-3">
+                            <Monitor size={18} className="text-gray-600" />
+                            <div>
+                                <div className="text-sm font-medium">Разрешение</div>
+                                <div className="text-xs text-gray-500">до 4K</div>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-3 rounded-lg border bg-white p-3">
+                            <Crop size={18} className="text-gray-600" />
+                            <div>
+                                <div className="text-sm font-medium">Соотношение</div>
+                                <div className="text-xs text-gray-500">1:1, 4:5, 9:16</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {preview && (
+                        <div className="mt-2">
+                            <p className="font-medium mb-2">Предпросмотр:</p>
+                            {file?.type.startsWith("video/") ? (
+                                <video
+                                    src={preview}
+                                    className="rounded-lg max-h-64 object-contain border w-full"
+                                    controls
+                                />
+                            ) : (
+                                <img
+                                    src={preview}
+                                    alt="preview"
+                                    className="rounded-lg max-h-64 object-contain border w-full"
+                                />
+                            )}
+                        </div>
+                    )}
+
                     <div>
                         <label className="block font-medium mb-1">Название</label>
                         <input
@@ -100,28 +195,6 @@ export default function NewMeme() {
                         />
                     </div>
 
-                    {/* Выбор файла */}
-                    <div>
-                        <label className="block font-medium mb-1">Выберите изображение</label>
-                        <input
-                            type="file"
-                            onChange={handleFileChange}
-                            className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50"
-                            required
-                        />
-                    </div>
-
-                    {/* Превью */}
-                    {preview && (
-                        <div className="mt-4">
-                            <p className="font-medium mb-2">Предпросмотр:</p>
-                            <img
-                                src={preview}
-                                alt="preview"
-                                className="rounded-lg max-h-64 object-contain border"
-                            />
-                        </div>
-                    )}
                     <div>
                         <label className="block font-medium mb-1">Теги</label>
 
@@ -154,13 +227,15 @@ export default function NewMeme() {
                         </div>
                     </div>
 
-                    <button
-                        type="submit"
-                        className="flex items-center gap-2 bg-blue-600 text-white rounded px-4 py-2 hover:bg-blue-700"
-                    >
-                        <Check size={18} />
-                        Создать
-                    </button>
+                    <div className="flex justify-center pt-2">
+                        <button
+                            type="submit"
+                            className="flex items-center gap-2 bg-blue-600 text-white rounded px-5 py-2.5 hover:bg-blue-700"
+                        >
+                            <Check size={18} />
+                            Добавить
+                        </button>
+                    </div>
                 </form>
             </div>
         </AppLayout>
