@@ -26,6 +26,7 @@ enum EExtType: int
         return match ($clientMimeType) {
             'image/png' => EExtType::PNG,
             'image/jpeg' => EExtType::JPEG,
+            'video/mp4' => EExtType::MP4,
             default => throw new BadRequestHttpException('unknown type'),
         };
     }

@@ -97,146 +97,148 @@ export default function NewMeme() {
         >
             <Head title="Создать мем" />
 
-            <div className="p-6 max-w-xl mx-auto">
-                <h1 className="text-2xl font-bold mb-6">Создать новый мем</h1>
+            <div className="w-full p-6">
+                <div className="w-full rounded-2xl border border-slate-800 bg-slate-950/80 p-6 shadow-xl">
+                    <h1 className="text-2xl font-bold text-slate-100 mb-6">Создать новый мем</h1>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label className="block font-medium mb-2">Файл</label>
-                        <div
-                            onClick={() => fileInputRef.current?.click()}
-                            onDragOver={(e) => {
-                                e.preventDefault();
-                                setIsDragging(true);
-                            }}
-                            onDragLeave={() => setIsDragging(false)}
-                            onDrop={handleDrop}
-                            className={`border-2 border-dashed rounded-lg px-4 py-8 text-center cursor-pointer transition ${
-                                isDragging ? "border-blue-500 bg-blue-50" : "border-gray-300 bg-gray-50"
-                            }`}
-                        >
-                            <div className="flex flex-col items-center gap-2">
-                                <div className="rounded-full bg-white p-3 shadow-sm">
-                                    <Upload size={20} />
+                    <form onSubmit={handleSubmit} className="space-y-4 text-slate-100">
+                        <div>
+                            <label className="block font-medium mb-2 text-slate-200">Файл</label>
+                            <div
+                                onClick={() => fileInputRef.current?.click()}
+                                onDragOver={(e) => {
+                                    e.preventDefault();
+                                    setIsDragging(true);
+                                }}
+                                onDragLeave={() => setIsDragging(false)}
+                                onDrop={handleDrop}
+                                className={`border-2 border-dashed rounded-xl px-4 py-8 text-center cursor-pointer transition ${
+                                    isDragging ? "border-cyan-400 bg-cyan-500/10" : "border-slate-700 bg-slate-900/70"
+                                }`}
+                            >
+                                <div className="flex flex-col items-center gap-2">
+                                    <div className="rounded-full bg-slate-900 p-3 shadow-sm border border-slate-700">
+                                        <Upload size={20} className="text-cyan-300" />
+                                    </div>
+                                    <div className="font-medium">Перетащите файл сюда</div>
+                                    <div className="text-sm text-slate-400">или нажмите, чтобы выбрать</div>
+                                    {file && (
+                                        <div className="text-sm text-slate-300">{file.name}</div>
+                                    )}
                                 </div>
-                                <div className="font-medium">Перетащите файл сюда</div>
-                                <div className="text-sm text-gray-500">или нажмите, чтобы выбрать</div>
-                                {file && (
-                                    <div className="text-sm text-gray-600">{file.name}</div>
+                            </div>
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                onChange={handleFileChange}
+                                accept="image/*,video/*"
+                                className="hidden"
+                            />
+                        </div>
+
+                        <div className="flex flex-nowrap gap-3 overflow-x-auto pb-1">
+                            <div className="min-w-[220px] flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/80 p-3">
+                                <Ruler size={18} className="text-slate-300" />
+                                <div>
+                                    <div className="text-sm font-medium text-slate-100">Размер</div>
+                                    <div className="text-xs text-slate-400">до 50 МБ</div>
+                                </div>
+                            </div>
+                            <div className="min-w-[220px] flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/80 p-3">
+                                <FileImage size={18} className="text-slate-300" />
+                                <div>
+                                    <div className="text-sm font-medium text-slate-100">Формат</div>
+                                    <div className="text-xs text-slate-400">JPG, PNG, GIF, MP4</div>
+                                </div>
+                            </div>
+                            <div className="min-w-[220px] flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/80 p-3">
+                                <Monitor size={18} className="text-slate-300" />
+                                <div>
+                                    <div className="text-sm font-medium text-slate-100">Разрешение</div>
+                                    <div className="text-xs text-slate-400">до 4K</div>
+                                </div>
+                            </div>
+                            <div className="min-w-[220px] flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/80 p-3">
+                                <Crop size={18} className="text-slate-300" />
+                                <div>
+                                    <div className="text-sm font-medium text-slate-100">Соотношение</div>
+                                    <div className="text-xs text-slate-400">1:1, 4:5, 9:16</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {preview && (
+                            <div className="mt-2">
+                                <p className="font-medium mb-2 text-slate-200">Предпросмотр:</p>
+                                {file?.type.startsWith("video/") ? (
+                                    <video
+                                        src={preview}
+                                        className="rounded-xl max-h-64 object-contain border border-slate-800 w-full bg-slate-900/70"
+                                        controls
+                                    />
+                                ) : (
+                                    <img
+                                        src={preview}
+                                        alt="preview"
+                                        className="rounded-xl max-h-64 object-contain border border-slate-800 w-full bg-slate-900/70"
+                                    />
                                 )}
                             </div>
-                        </div>
-                        <input
-                            ref={fileInputRef}
-                            type="file"
-                            onChange={handleFileChange}
-                            accept="image/*,video/*"
-                            className="hidden"
-                        />
-                    </div>
+                        )}
 
-                    <div className="grid grid-cols-2 gap-3">
-                        <div className="flex items-center gap-3 rounded-lg border bg-white p-3">
-                            <Ruler size={18} className="text-gray-600" />
-                            <div>
-                                <div className="text-sm font-medium">Размер</div>
-                                <div className="text-xs text-gray-500">до 50 МБ</div>
-                            </div>
+                        <div>
+                            <label className="block font-medium mb-1 text-slate-200">Название</label>
+                            <input
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                className="border border-slate-800 rounded-lg px-3 py-2 w-full bg-slate-900/80 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/60"
+                                required
+                            />
                         </div>
-                        <div className="flex items-center gap-3 rounded-lg border bg-white p-3">
-                            <FileImage size={18} className="text-gray-600" />
-                            <div>
-                                <div className="text-sm font-medium">Формат</div>
-                                <div className="text-xs text-gray-500">JPG, PNG, GIF, MP4</div>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-3 rounded-lg border bg-white p-3">
-                            <Monitor size={18} className="text-gray-600" />
-                            <div>
-                                <div className="text-sm font-medium">Разрешение</div>
-                                <div className="text-xs text-gray-500">до 4K</div>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-3 rounded-lg border bg-white p-3">
-                            <Crop size={18} className="text-gray-600" />
-                            <div>
-                                <div className="text-sm font-medium">Соотношение</div>
-                                <div className="text-xs text-gray-500">1:1, 4:5, 9:16</div>
-                            </div>
-                        </div>
-                    </div>
 
-                    {preview && (
-                        <div className="mt-2">
-                            <p className="font-medium mb-2">Предпросмотр:</p>
-                            {file?.type.startsWith("video/") ? (
-                                <video
-                                    src={preview}
-                                    className="rounded-lg max-h-64 object-contain border w-full"
-                                    controls
-                                />
-                            ) : (
-                                <img
-                                    src={preview}
-                                    alt="preview"
-                                    className="rounded-lg max-h-64 object-contain border w-full"
-                                />
-                            )}
-                        </div>
-                    )}
+                        <div>
+                            <label className="block font-medium mb-1 text-slate-200">Теги</label>
 
-                    <div>
-                        <label className="block font-medium mb-1">Название</label>
-                        <input
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            className="border rounded px-3 py-2 w-full"
-                            required
-                        />
-                    </div>
+                            <input
+                                type="text"
+                                value={tagInput}
+                                onChange={(e) => setTagInput(e.target.value)}
+                                onKeyDown={handleTagKeyDown}
+                                placeholder="Введите тег и нажмите Enter"
+                                className="border border-slate-800 rounded-lg px-3 py-2 w-full bg-slate-900/80 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/60"
+                            />
 
-                    <div>
-                        <label className="block font-medium mb-1">Теги</label>
-
-                        <input
-                            type="text"
-                            value={tagInput}
-                            onChange={(e) => setTagInput(e.target.value)}
-                            onKeyDown={handleTagKeyDown}
-                            placeholder="Введите тег и нажмите Enter"
-                            className="border rounded px-3 py-2 w-full"
-                        />
-
-                        {/* Показ тегов */}
-                        <div className="flex flex-wrap gap-2 mt-3">
-                            {tags.map((tag) => (
-                                <span
-                                    key={tag}
-                                    className="px-2 py-1 bg-green-200 rounded-full flex items-center gap-1 text-sm"
-                                >
-                                    {tag}
-                                    <button
-                                        type="button"
-                                        className="text-red-500 hover:text-red-700"
-                                        onClick={() => removeTag(tag)}
+                            {/* Показ тегов */}
+                            <div className="flex flex-wrap gap-2 mt-3">
+                                {tags.map((tag) => (
+                                    <span
+                                        key={tag}
+                                        className="px-2 py-1 bg-emerald-500/15 text-emerald-200 border border-emerald-500/40 rounded-full flex items-center gap-1 text-sm"
                                     >
-                                        ×
-                                    </button>
-                                </span>
-                            ))}
+                                        {tag}
+                                        <button
+                                            type="button"
+                                            className="text-rose-300 hover:text-rose-200"
+                                            onClick={() => removeTag(tag)}
+                                        >
+                                            ×
+                                        </button>
+                                    </span>
+                                ))}
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="flex justify-center pt-2">
-                        <button
-                            type="submit"
-                            className="flex items-center gap-2 bg-blue-600 text-white rounded px-5 py-2.5 hover:bg-blue-700"
-                        >
-                            <Check size={18} />
-                            Добавить
-                        </button>
-                    </div>
-                </form>
+                        <div className="flex justify-center pt-2">
+                            <button
+                                type="submit"
+                                className="flex items-center gap-2 bg-cyan-500 text-slate-900 rounded-lg px-6 py-2.5 font-semibold hover:bg-cyan-400 transition"
+                            >
+                                <Check size={18} />
+                                Добавить
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </AppLayout>
     );
