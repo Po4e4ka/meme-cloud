@@ -2,8 +2,9 @@ import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import { BreadcrumbItem, HeaderAction } from '@/types';
 import { ArrowLeft, Check, Crop, FileImage, Monitor, Ruler, Upload } from "lucide-react";
-import React, { useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { InternalApi } from "@/api";
+import Cropper, { Area } from "react-easy-crop";
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -26,6 +27,20 @@ export default function NewMeme() {
     const [preview, setPreview] = useState<string | null>(null);
     const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
+
+    const [crop, setCrop] = useState({ x: 0, y: 0 });
+    const [zoom, setZoom] = useState(1);
+    const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
+    const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
+    const [videoDuration, setVideoDuration] = useState(0);
+    const [videoTime, setVideoTime] = useState(0);
+    const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
+    const [videoPreviewFile, setVideoPreviewFile] = useState<File | null>(null);
+
+    const PREVIEW_WIDTH = 720;
+    const PREVIEW_HEIGHT = 1280;
+    const PREVIEW_ASPECT = PREVIEW_WIDTH / PREVIEW_HEIGHT;
 
     function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
         handleSelectedFile(e.target.files?.[0] ?? null);
@@ -35,6 +50,14 @@ export default function NewMeme() {
         if (!selected) return;
 
         setFile(selected);
+        setPreviewImageUrl(null);
+        setVideoPreviewUrl(null);
+        setVideoPreviewFile(null);
+        setVideoDuration(0);
+        setVideoTime(0);
+        setCrop({ x: 0, y: 0 });
+        setZoom(1);
+        setCroppedAreaPixels(null);
         setPreview(URL.createObjectURL(selected));
     }
 
@@ -52,6 +75,10 @@ export default function NewMeme() {
             alert('Выберите файл');
             return;
         }
+        if (file.type.startsWith("image/") && !croppedAreaPixels) {
+            alert('Выберите область превью');
+            return;
+        }
 
         const formData = new FormData();
         formData.append('name', title);
@@ -62,7 +89,16 @@ export default function NewMeme() {
         });
         const memeController = (new InternalApi).v1().meme()
 
-        memeController.new(formData);
+        buildPreviewFile()
+            .then((previewFile) => {
+                if (previewFile) {
+                    formData.append('preview', previewFile);
+                }
+                memeController.new(formData);
+            })
+            .catch(() => {
+                alert('Не удалось подготовить превью');
+            });
     }
 
     const [tagInput, setTagInput] = useState("");
@@ -89,6 +125,169 @@ export default function NewMeme() {
     function removeTag(tag: string) {
         setTags(tags.filter(t => t !== tag));
     }
+
+    const onCropComplete = useCallback((_: Area, croppedPixels: Area) => {
+        setCroppedAreaPixels(croppedPixels);
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            if (preview) {
+                URL.revokeObjectURL(preview);
+            }
+        };
+    }, [preview]);
+
+    const createImage = useCallback((url: string): Promise<HTMLImageElement> => {
+        return new Promise((resolve, reject) => {
+            const image = new Image();
+            image.addEventListener("load", () => resolve(image));
+            image.addEventListener("error", reject);
+            image.src = url;
+        });
+    }, []);
+
+    const getCroppedPreview = useCallback(async (source: string, cropArea: Area) => {
+        const image = await createImage(source);
+        const canvas = document.createElement("canvas");
+        canvas.width = PREVIEW_WIDTH;
+        canvas.height = PREVIEW_HEIGHT;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+            throw new Error("Canvas context missing");
+        }
+
+        ctx.drawImage(
+            image,
+            cropArea.x,
+            cropArea.y,
+            cropArea.width,
+            cropArea.height,
+            0,
+            0,
+            PREVIEW_WIDTH,
+            PREVIEW_HEIGHT,
+        );
+
+        return canvas;
+    }, [PREVIEW_HEIGHT, PREVIEW_WIDTH, createImage]);
+
+    useEffect(() => {
+        if (!preview || !file || !croppedAreaPixels || !file.type.startsWith("image/")) {
+            return;
+        }
+
+        let isCancelled = false;
+        getCroppedPreview(preview, croppedAreaPixels)
+            .then((canvas) => {
+                if (isCancelled) return;
+                const url = canvas.toDataURL("image/jpeg", 0.9);
+                setPreviewImageUrl(url);
+            })
+            .catch(() => {
+                if (isCancelled) return;
+                setPreviewImageUrl(null);
+            });
+
+        return () => {
+            isCancelled = true;
+        };
+    }, [preview, file, croppedAreaPixels, getCroppedPreview]);
+
+    const captureVideoFrame = useCallback(async () => {
+        if (!videoRef.current) return;
+        const video = videoRef.current;
+        const canvas = document.createElement("canvas");
+        canvas.width = PREVIEW_WIDTH;
+        canvas.height = PREVIEW_HEIGHT;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+            return null;
+        }
+
+        const videoAspect = video.videoWidth / video.videoHeight;
+        const targetAspect = PREVIEW_ASPECT;
+        let sx = 0;
+        let sy = 0;
+        let sWidth = video.videoWidth;
+        let sHeight = video.videoHeight;
+
+        if (videoAspect > targetAspect) {
+            sWidth = video.videoHeight * targetAspect;
+            sx = (video.videoWidth - sWidth) / 2;
+        } else if (videoAspect < targetAspect) {
+            sHeight = video.videoWidth / targetAspect;
+            sy = (video.videoHeight - sHeight) / 2;
+        }
+
+        ctx.drawImage(video, sx, sy, sWidth, sHeight, 0, 0, PREVIEW_WIDTH, PREVIEW_HEIGHT);
+
+        const blob = await new Promise<Blob | null>((resolve) => {
+            canvas.toBlob((b) => resolve(b), "image/jpeg", 0.9);
+        });
+
+        if (!blob) return null;
+        const file = new File([blob], "preview.jpg", { type: "image/jpeg" });
+        const url = canvas.toDataURL("image/jpeg", 0.9);
+        setVideoPreviewFile(file);
+        setVideoPreviewUrl(url);
+        return file;
+    }, [PREVIEW_ASPECT, PREVIEW_HEIGHT, PREVIEW_WIDTH]);
+
+    useEffect(() => {
+        if (!preview || !file || !file.type.startsWith("video/")) {
+            return;
+        }
+
+        const video = videoRef.current;
+        if (!video) return;
+
+        const handleLoaded = () => {
+            setVideoDuration(video.duration);
+            setVideoTime(0);
+            video.currentTime = 0;
+        };
+
+        const handleSeeked = () => {
+            captureVideoFrame();
+        };
+
+        video.addEventListener("loadedmetadata", handleLoaded);
+        video.addEventListener("seeked", handleSeeked);
+
+        return () => {
+            video.removeEventListener("loadedmetadata", handleLoaded);
+            video.removeEventListener("seeked", handleSeeked);
+        };
+    }, [preview, file, captureVideoFrame]);
+
+    const handleVideoTimeChange = (value: number) => {
+        if (!videoRef.current) return;
+        setVideoTime(value);
+        videoRef.current.currentTime = value;
+    };
+
+    const buildPreviewFile = async () => {
+        if (!file) return null;
+
+        if (file.type.startsWith("image/")) {
+            if (!preview || !croppedAreaPixels) return null;
+            const canvas = await getCroppedPreview(preview, croppedAreaPixels);
+            const blob = await new Promise<Blob | null>((resolve) => {
+                canvas.toBlob((b) => resolve(b), "image/jpeg", 0.9);
+            });
+            if (!blob) return null;
+            return new File([blob], "preview.jpg", { type: "image/jpeg" });
+        }
+
+        if (file.type.startsWith("video/")) {
+            if (videoPreviewFile) return videoPreviewFile;
+            const file = await captureVideoFrame();
+            return file ?? null;
+        }
+
+        return null;
+    };
 
     return (
         <AppLayout
@@ -170,20 +369,68 @@ export default function NewMeme() {
                                 </div>
 
                                 {preview && (
-                                    <div className="mt-2">
-                                        <p className="font-medium mb-2 text-slate-200">Предпросмотр:</p>
+                                    <div className="mt-2 space-y-3">
+                                        <p className="font-medium text-slate-200">Предпросмотр и выбор превью 9:16</p>
                                         {file?.type.startsWith("video/") ? (
-                                            <video
-                                                src={preview}
-                                                className="rounded-xl max-h-64 object-contain border border-slate-800 w-full bg-slate-900/70"
-                                                controls
-                                            />
+                                            <div className="space-y-3">
+                                                <video
+                                                    ref={videoRef}
+                                                    src={preview}
+                                                    className="rounded-xl max-h-64 object-contain border border-slate-800 w-full bg-slate-900/70"
+                                                    controls
+                                                />
+                                                <div className="flex items-center gap-3">
+                                                    <input
+                                                        type="range"
+                                                        min={0}
+                                                        max={Math.max(0, videoDuration)}
+                                                        step={0.1}
+                                                        value={videoTime}
+                                                        onChange={(e) => handleVideoTimeChange(Number(e.target.value))}
+                                                        className="w-full"
+                                                    />
+                                                    <span className="text-xs text-slate-400 w-12 text-right">
+                                                        {videoTime.toFixed(1)}s
+                                                    </span>
+                                                </div>
+                                                {videoPreviewUrl && (
+                                                    <img
+                                                        src={videoPreviewUrl}
+                                                        alt="preview"
+                                                        className="rounded-xl max-h-64 object-contain border border-slate-800 w-full bg-slate-900/70"
+                                                    />
+                                                )}
+                                            </div>
                                         ) : (
-                                            <img
-                                                src={preview}
-                                                alt="preview"
-                                                className="rounded-xl max-h-64 object-contain border border-slate-800 w-full bg-slate-900/70"
-                                            />
+                                            <div className="space-y-3">
+                                                <div className="relative h-80 w-full overflow-hidden rounded-xl border border-slate-800 bg-slate-900/70">
+                                                    <Cropper
+                                                        image={preview}
+                                                        crop={crop}
+                                                        zoom={zoom}
+                                                        aspect={PREVIEW_ASPECT}
+                                                        onCropChange={setCrop}
+                                                        onZoomChange={setZoom}
+                                                        onCropComplete={onCropComplete}
+                                                    />
+                                                </div>
+                                                <input
+                                                    type="range"
+                                                    min={1}
+                                                    max={3}
+                                                    step={0.05}
+                                                    value={zoom}
+                                                    onChange={(e) => setZoom(Number(e.target.value))}
+                                                    className="w-full"
+                                                />
+                                                {previewImageUrl && (
+                                                    <img
+                                                        src={previewImageUrl}
+                                                        alt="preview"
+                                                        className="rounded-xl max-h-64 object-contain border border-slate-800 w-full bg-slate-900/70"
+                                                    />
+                                                )}
+                                            </div>
                                         )}
                                     </div>
                                 )}

@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('media', function (Blueprint $table) {
-            $table->integer('preview_media_id')->nullable();
+            $table->integer('preview_media_id')->nullable()->unsigned();
         });
     }
 

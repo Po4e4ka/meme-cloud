@@ -50,7 +50,13 @@ class User extends Authenticatable
 
     public function media(): HasMany
     {
-        return $this->hasMany(Media::class)->whereNull('preview_media_id');
+        return $this->hasMany(Media::class)->whereNotIn('id', function ($query) {
+            $query
+                ->select('preview_media_id')
+                ->from('media')
+                ->whereNotNull('preview_media_id')
+                ->where('user_id', $this->id);
+        });
     }
 
     public function allMedia(): HasMany

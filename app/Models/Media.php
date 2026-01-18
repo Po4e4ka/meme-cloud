@@ -65,7 +65,7 @@ class Media extends Model
 
     public function isPreview(): bool
     {
-        return (bool)$this->preview_media_id;
+        return !(bool)$this->preview_media_id;
     }
 
     public function preview(): BelongsTo

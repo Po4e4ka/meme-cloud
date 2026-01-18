@@ -24,11 +24,20 @@ readonly class MemesController extends Controller
         }
 
         $name = $request->getPayload()->get('name');
+        $previewFile = $request->file('preview');
 
         $media = $this->mediaService->upload($file);
 
         $media->name = $name;
         $media->save();
+
+        if ($previewFile) {
+            $preview = $this->mediaService->upload($previewFile);
+            $preview->name = $name . ' preview';
+            $preview->save();
+            $media->preview_media_id = $preview->id;
+            $media->save();
+        }
 
         redirect()->route('dashboard');
     }
