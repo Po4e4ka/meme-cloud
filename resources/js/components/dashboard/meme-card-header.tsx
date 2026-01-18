@@ -2,6 +2,7 @@ import { MoreVertical, Edit2, Trash2, Share2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import MemeCardMenuButton from "@/components/dashboard/meme-card-menu-button";
 import { InternalApi } from "@/api";
+import { router } from "@inertiajs/react";
 
 export type MemeCardHeaderProps = {
     isHovered: boolean,
@@ -23,6 +24,11 @@ export default function MemeCardHeader({isHovered, memeId}: MemeCardHeaderProps)
         e.stopPropagation()
         await internalApi.delete(memeId);
     }
+
+    const handleEditButton = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        router.visit(route('meme.edit', memeId));
+    };
 
     return (
         <div
@@ -49,7 +55,7 @@ export default function MemeCardHeader({isHovered, memeId}: MemeCardHeaderProps)
                         : "translate-x-10 opacity-0 pointer-events-none"
                 }`}
             >
-                <MemeCardMenuButton Icon={Edit2}  onClick={(e) => e.stopPropagation()} />
+                <MemeCardMenuButton Icon={Edit2} onClick={handleEditButton} />
                 <MemeCardMenuButton Icon={Trash2} onClick={handleTrashButton} />
                 <MemeCardMenuButton Icon={Share2} onClick={(e) => e.stopPropagation()} />
             </div>

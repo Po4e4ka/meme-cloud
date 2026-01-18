@@ -18,4 +18,13 @@ export class MemeController extends AbstractController {
             }
         })
     }
+
+    public async update(cardId: number, formData: FormData) {
+        return router.post(route('meme.update', cardId), formData, {
+            forceFormData: true,
+            onSuccess: () => {
+                router.visit(route('dashboard'));
+            }
+        })
+    }
 }

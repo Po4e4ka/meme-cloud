@@ -18,6 +18,16 @@ class MediaResource extends JsonResource
     {
         $preview = $this->preview;
         $mediaForPreview = $preview ?? $this;
+        $mediaUrl = route('static.media', [
+            'hash' => $this->hash,
+            'ext' => ltrim($this->ext->stringValue(), '.'),
+        ]);
+        $previewUrl = $preview
+            ? route('static.media', [
+                'hash' => $preview->hash,
+                'ext' => ltrim($preview->ext->stringValue(), '.'),
+            ])
+            : null;
 
         return [
             'id'    => $this->id,
@@ -26,6 +36,10 @@ class MediaResource extends JsonResource
                 'hash' => $mediaForPreview->hash,
                 'ext' => ltrim($mediaForPreview->ext->stringValue(), '.'),
             ]),
+            'media_url' => $mediaUrl,
+            'preview_url' => $previewUrl,
+            'type' => strtolower($this->type->name),
+            'tags' => $this->tags->pluck('name')->values(),
         ];
     }
 }
