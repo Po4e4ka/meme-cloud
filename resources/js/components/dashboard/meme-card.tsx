@@ -6,19 +6,26 @@ export type MemeCardProps = {
     id: number;
     title: string;
     image_url: string;
+    media_url: string;
+    type: string;
 };
 
-export default function MemeCard({ id, title, image_url }: MemeCardProps) {
+type MemeCardActions = {
+    onOpen: () => void;
+};
+
+export default function MemeCard({ id, title, image_url, onOpen }: MemeCardProps & MemeCardActions) {
     const [isHovered, setIsHovered] = useState(false);
 
     return (
         <div
             key={id}
-            className="relative w-[200px] h-[260px] overflow-hidden rounded-lg border border-gray-300 dark:border-gray-700 bg-neutral-50 dark:bg-neutral-900"
+            className="relative w-[198px] h-[258px] overflow-hidden rounded-lg border border-gray-300 dark:border-gray-700 bg-neutral-50 dark:bg-neutral-900 cursor-pointer"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => {
                 setIsHovered(false);
             }}
+            onClick={onOpen}
         >
             <img
                 src={image_url}

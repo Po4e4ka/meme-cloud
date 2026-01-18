@@ -38,8 +38,8 @@ export default function NewMeme() {
     const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
     const [videoPreviewFile, setVideoPreviewFile] = useState<File | null>(null);
 
-    const PREVIEW_WIDTH = 720;
-    const PREVIEW_HEIGHT = 1280;
+    const PREVIEW_WIDTH = 198;
+    const PREVIEW_HEIGHT = 258;
     const PREVIEW_ASPECT = PREVIEW_WIDTH / PREVIEW_HEIGHT;
 
     function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
