@@ -22,4 +22,3 @@ readonly class DashboardController extends Controller
         return Inertia::render('memes/new');
     }
 }
-

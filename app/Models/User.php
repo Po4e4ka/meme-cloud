@@ -13,6 +13,7 @@ use Illuminate\Notifications\Notifiable;
  * @property int id
  * @property Bucket $bucket
  * @property Media[] $media
+ * @property Media[] $allMedia
  */
 class User extends Authenticatable
 {
@@ -48,6 +49,11 @@ class User extends Authenticatable
     }
 
     public function media(): HasMany
+    {
+        return $this->hasMany(Media::class)->whereNull('preview_media_id');
+    }
+
+    public function allMedia(): HasMany
     {
         return $this->hasMany(Media::class);
     }

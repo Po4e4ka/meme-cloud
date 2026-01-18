@@ -17,6 +17,7 @@ use MemeCloud\Enums\EMediaType;
  * @property EExtType $ext
  * @property EMediaType $type
  * @property int $user_id
+ * @property int $preview_media_id
  */
 class Media extends Model
 {
@@ -29,6 +30,7 @@ class Media extends Model
         'ext',
         'type',
         'user_id',
+        'preview_media_id',
     ];
 
     protected $casts = [
@@ -59,5 +61,15 @@ class Media extends Model
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    public function isPreview(): bool
+    {
+        return (bool)$this->preview_media_id;
+    }
+
+    public function preview(): BelongsTo
+    {
+        return $this->belongsTo(Media::class, 'preview_media_id');
     }
 }
