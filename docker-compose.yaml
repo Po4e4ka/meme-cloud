@@ -17,7 +17,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
-  meme-node:
+  meme-node: &node
     container_name: meme-node
     image: node:24-alpine3.21
     user: 1000:1000
@@ -28,6 +28,14 @@ services:
       - '5173:5173'
     command: >
       sh -c "npm run dev"
+
+  meme-node-build:
+    <<: *node
+    container_name: meme-node-build
+    ports: []
+    command: >
+      sh -c "npm run build" 
+    
 
   meme-db:
     container_name: meme-db

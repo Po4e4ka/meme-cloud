@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Офлайн</title>
+        <meta name="theme-color" content="#0f172a">
+        <style>
+            body {
+                margin: 0;
+                font-family: "Instrument Sans", system-ui, -apple-system, sans-serif;
+                background: #0f172a;
+                color: #f8fafc;
+                display: grid;
+                place-items: center;
+                min-height: 100vh;
+            }
+
+            .card {
+                max-width: 420px;
+                padding: 32px;
+                background: #111827;
+                border-radius: 16px;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+                text-align: center;
+            }
+
+            .card h1 {
+                margin: 0 0 12px;
+                font-size: 22px;
+            }
+
+            .card p {
+                margin: 0 0 24px;
+                color: #cbd5f5;
+                line-height: 1.5;
+            }
+
+            .card button {
+                border: 0;
+                border-radius: 12px;
+                padding: 10px 16px;
+                font-weight: 600;
+                background: #f97316;
+                color: #0f172a;
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <h1>Нет соединения</h1>
+            <p>Ты офлайн. Проверь сеть и попробуй снова открыть страницу.</p>
+            <button type="button" onclick="window.__retryOnline()">Попробовать снова</button>
+        </div>
+        <script>
+            const retryKey = 'pwa-offline-retry-at';
+            const retryDelayMs = 8000;
+
+            async function tryBackOnline() {
+                if (!navigator.onLine) {
+                    return;
+                }
+
+                const lastRetry = Number(sessionStorage.getItem(retryKey) || 0);
+                if (Date.now() - lastRetry < retryDelayMs) {
+                    return;
+                }
+                sessionStorage.setItem(retryKey, String(Date.now()));
+
+                try {
+                    const response = await fetch('/', { cache: 'no-store' });
+                    if (response.ok && !response.url.includes('/offline.html')) {
+                        window.location.replace(response.url);
+                    }
+                } catch {
+                    // stay on offline page
+                }
+            }
+
+            window.__retryOnline = () => void tryBackOnline();
+            window.addEventListener('online', tryBackOnline);
+        </script>
+    </body>
+</html>

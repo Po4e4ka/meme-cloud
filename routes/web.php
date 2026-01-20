@@ -4,6 +4,19 @@ use Illuminate\Support\Facades\Route;
 use MemeCloud\Http\Controllers\StaticController;
 use MemeCloud\Http\Controllers\Web\DashboardController;
 
+Route::get('/build/sw.js', function () {
+    $path = public_path('build/sw.js');
+
+    if (! file_exists($path)) {
+        abort(404);
+    }
+
+    return response()->file($path, [
+        'Service-Worker-Allowed' => '/',
+        'Cache-Control' => 'no-cache',
+    ]);
+})->name('pwa.sw');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/memes/new', [DashboardController::class, 'newMeme'])->name('new-meme');

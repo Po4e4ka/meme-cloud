@@ -9,6 +9,16 @@
     {
       "match": {
         "uri": [
+          "/build/sw.js"
+        ]
+      },
+      "action": {
+        "pass": "applications/meme-cloud/index"
+      }
+    },
+    {
+      "match": {
+        "uri": [
           "/assets/*",
           "/static/*"
         ]
