@@ -18,6 +18,9 @@ export default defineConfig({
             registerType: 'autoUpdate',
             injectRegister: false,
             scope: '/',
+            srcDir: 'resources/js',
+            filename: 'sw.ts',
+            strategies: 'injectManifest',
             includeAssets: [
                 'favicon.ico',
                 'favicon.svg',
@@ -58,54 +61,9 @@ export default defineConfig({
                     },
                 ],
             },
-            workbox: {
-                cleanupOutdatedCaches: true,
-                clientsClaim: true,
-                skipWaiting: true,
-                navigateFallback: '/offline.html',
+            injectManifest: {
                 additionalManifestEntries: [
                     { url: '/offline.html', revision: null },
-                ],
-                runtimeCaching: [
-                    {
-                        urlPattern: ({ request }) => request.destination === 'document',
-                        handler: 'NetworkFirst',
-                        options: {
-                            cacheName: 'pages',
-                            expiration: {
-                                maxEntries: 50,
-                                maxAgeSeconds: 60 * 60 * 24,
-                            },
-                        },
-                    },
-                    {
-                        urlPattern: ({ request }) => request.destination === 'image',
-                        handler: 'CacheFirst',
-                        options: {
-                            cacheName: 'images',
-                            cacheableResponse: {
-                                statuses: [0, 200],
-                            },
-                            expiration: {
-                                maxEntries: 200,
-                                maxAgeSeconds: 60 * 60 * 24 * 7,
-                            },
-                        },
-                    },
-                    {
-                        urlPattern: ({ request }) => request.destination === 'video',
-                        handler: 'CacheFirst',
-                        options: {
-                            cacheName: 'videos',
-                            cacheableResponse: {
-                                statuses: [0, 200],
-                            },
-                            expiration: {
-                                maxEntries: 50,
-                                maxAgeSeconds: 60 * 60 * 24 * 7,
-                            },
-                        },
-                    },
                 ],
             },
             devOptions: {
