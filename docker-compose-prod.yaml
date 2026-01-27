@@ -49,8 +49,6 @@ services:
       MYSQL_PASSWORD: 1
       MYSQL_DATABASE: meme
       MYSQL_ROOT_PASSWORD: 1
-    ports:
-      - "3306:3306"
     volumes:
       - ./containers/init-scripts/percona-init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./var/data/percona:/var/lib/mysql
