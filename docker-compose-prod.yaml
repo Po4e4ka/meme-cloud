@@ -14,8 +14,18 @@ services:
       - ./containers/configs/unit/unit.json:/docker-entrypoint.d/unit.json:ro
     ports:
       - '4205:80'
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.lucky.rule=Host(`meme-cloud.devilops.tech`)"
+      - "traefik.http.routers.lucky.entrypoints=websecure"
+      - "traefik.http.routers.lucky.tls.certresolver=letsencrypt"
+      - "traefik.http.services.lucky.loadbalancer.server.port=80"
+
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    networks:
+      - infra_traefik_net
 
   meme-node:
     container_name: meme-node
