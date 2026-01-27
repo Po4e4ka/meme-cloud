@@ -56,3 +56,7 @@ services:
       - ./var/data/percona:/var/lib/mysql
       - ./var/logs/percona:/var/log/mysql
       - /etc/localtime:/etc/localtime:ro
+
+networks:
+  infra_traefik_net:
+    external: true
