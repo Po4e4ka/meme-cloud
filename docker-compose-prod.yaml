@@ -45,6 +45,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
     networks:
       - meme-cloud
+    ports:
+      - '4206:3306'
 
 networks:
   infra_traefik_net:
