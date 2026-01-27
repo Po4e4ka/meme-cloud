@@ -13,14 +13,14 @@ services:
       - ./containers/configs/php/php.ini:/usr/local/etc/php/conf.d/php.ini
       - ./containers/configs/unit/unit.json:/docker-entrypoint.d/unit.json:ro
     ports:
-      - '4205:80'
+      - '4205:8000'
 
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.meme-cloud.rule=Host(`meme-cloud.devilops.tech`)"
       - "traefik.http.routers.meme-cloud.entrypoints=websecure"
       - "traefik.http.routers.meme-cloud.tls.certresolver=letsencrypt"
-      - "traefik.http.services.meme-cloud.loadbalancer.server.port=80"
+      - "traefik.http.services.meme-cloud.loadbalancer.server.port=8000"
 
     extra_hosts:
       - "host.docker.internal:host-gateway"
