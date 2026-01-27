@@ -27,6 +27,7 @@ enum EExtType: int
             'image/png' => EExtType::PNG,
             'image/jpeg' => EExtType::JPEG,
             'video/mp4' => EExtType::MP4,
+            'image/webp' => EExtType::WEBP,
             default => throw new BadRequestHttpException('unknown type'),
         };
     }

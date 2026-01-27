@@ -6,8 +6,9 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Storage;
 use MemeCloud\Models\Media;
 use MemeCloud\Models\User;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
-readonly class MinioBucketService
+readonly class BucketService
 {
     public function __construct(
         /** @var User $user */
@@ -20,16 +21,16 @@ readonly class MinioBucketService
     protected function getDisk()
     {
         $bucket = $this->user->bucket;
-
-        return Storage::build([
+        $adapter = Storage::build([
             'driver' => 's3',
             'bucket' => $bucket->name,
             'key' => $bucket->access_key,
             'secret' => $bucket->secret_key,
-            'region' => 'us-east-1',
+            'region' => 'ru-3',
             'endpoint' => $bucket->endpoint,
             'use_path_style_endpoint' => true,
         ]);
+        return $adapter;
     }
 
     /**
@@ -38,10 +39,13 @@ readonly class MinioBucketService
     public function putMedia(Media $media): string
     {
         $path = $this->getDisk()->putFileAs(
-            $media->getBucketFolder(),
+            rtrim($media->getBucketFolder(), '/'),
             $media->file,
             $media->getBucketName(),
         );
+        if (!$path) {
+            throw new BadRequestException('Ошибка, файл не сохранён в бакет.');
+        }
         $media->save();
 
         return $path;

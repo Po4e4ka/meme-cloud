@@ -8,7 +8,7 @@ use MemeCloud\Enums\EExtType;
 use MemeCloud\Enums\EMediaType;
 use MemeCloud\Models\Media;
 use MemeCloud\Models\User;
-use MemeCloud\Services\Bucket\MinioBucketService;
+use MemeCloud\Services\Bucket\BucketService;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -20,7 +20,7 @@ readonly class MediaService
      */
     public function __construct(
         private Authenticatable $user,
-        private MinioBucketService $minioBucketService,
+        private BucketService $minioBucketService,
     )
     {
         if (!$user instanceof User) {
@@ -31,7 +31,7 @@ readonly class MediaService
     public function upload(UploadedFile $file): Media
     {
         $media = $this->makeFromFile($file);
-        $media->save();
+//        $media->save();
 
         $this->minioBucketService->putMedia($media);
 

@@ -5,11 +5,11 @@ namespace MemeCloud\Http\Controllers;
 use Illuminate\Http\Request;
 use MemeCloud\Enums\EExtType;
 use MemeCloud\Models\Media;
-use MemeCloud\Services\Bucket\MinioBucketService;
+use MemeCloud\Services\Bucket\BucketService;
 
 readonly class StaticController extends Controller
 {
-    public function media(Request $request, string $hash, string $ext, MinioBucketService $bucketService)
+    public function media(Request $request, string $hash, string $ext, BucketService $bucketService)
     {
         $extEnum = EExtType::fromExtension($ext);
         $media = Media::where('hash', $hash)->where('ext', $extEnum)->first();
@@ -33,7 +33,7 @@ readonly class StaticController extends Controller
         }
 
         $stream = $bucketService->readStream($media);
-        if ($stream === false) {
+        if (!$stream) {
             abort(404);
         }
 
