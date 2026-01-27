@@ -34,7 +34,7 @@ services:
       - ./:/var/www
     working_dir: /var/www
     command: >
-      sh -c "npm run build" 
+      sh -c "npm i && npm run build" 
 
   meme-db:
     container_name: meme-db
