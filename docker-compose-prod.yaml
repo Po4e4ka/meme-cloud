@@ -47,6 +47,8 @@ services:
       - meme-cloud
     ports:
       - '4206:3306'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 networks:
   infra_traefik_net:
