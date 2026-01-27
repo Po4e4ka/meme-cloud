@@ -26,16 +26,6 @@ services:
       - infra_traefik_net
       - meme-cloud
 
-  meme-node:
-    container_name: meme-node
-    image: node:24-alpine3.21
-    user: 1000:1000
-    volumes:
-      - ./:/var/www
-    working_dir: /var/www
-    command: >
-      sh -c "npm i && npm run build" 
-
   meme-db:
     container_name: meme-db
     build:
