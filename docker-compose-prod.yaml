@@ -38,6 +38,10 @@ services:
       MYSQL_PASSWORD: 1
       MYSQL_DATABASE: meme
       MYSQL_ROOT_PASSWORD: 1
+    ports:
+      - '4206:3306'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./containers/init-scripts/percona-init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./var/data/percona:/var/lib/mysql
@@ -45,10 +49,6 @@ services:
       - /etc/localtime:/etc/localtime:ro
     networks:
       - meme-cloud
-    ports:
-      - '4206:3306'
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
 
 networks:
   infra_traefik_net:
