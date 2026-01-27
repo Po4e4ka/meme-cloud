@@ -26,6 +26,7 @@ services:
       - "host.docker.internal:host-gateway"
     networks:
       - infra_traefik_net
+      - meme-cloud
 
   meme-node:
     container_name: meme-node
@@ -54,7 +55,11 @@ services:
       - ./var/data/percona:/var/lib/mysql
       - ./var/logs/percona:/var/log/mysql
       - /etc/localtime:/etc/localtime:ro
+    networks:
+      - meme-cloud
 
 networks:
   infra_traefik_net:
     external: true
+  meme-cloud:
+    internal: true
