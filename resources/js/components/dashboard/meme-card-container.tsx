@@ -36,7 +36,7 @@ export default function MemeCardContainer({ memes }: MemeCardContainerProps) {
 
     return (
         <div className="p-4 sm:p-6">
-            <div className="grid w-full grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+            <div className="grid w-full grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(198px,1fr))] sm:gap-4">
                 {memes.map((meme, index) => (
                     <MemeCard
                         id={meme.id}

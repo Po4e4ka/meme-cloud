@@ -20,7 +20,7 @@ export default function MemeCard({ id, title, image_url, onOpen }: MemeCardProps
     return (
         <div
             key={id}
-            className="relative w-full aspect-[3/4] overflow-hidden rounded-2xl border border-gray-300 dark:border-gray-700 bg-neutral-50 dark:bg-neutral-900 cursor-pointer sm:w-[198px] sm:h-[258px] sm:aspect-auto sm:rounded-lg"
+            className="relative w-full aspect-[3/4] overflow-hidden rounded-2xl border border-gray-300 dark:border-gray-700 bg-neutral-50 dark:bg-neutral-900 cursor-pointer sm:h-[258px] sm:aspect-auto sm:rounded-lg"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => {
                 setIsHovered(false);
