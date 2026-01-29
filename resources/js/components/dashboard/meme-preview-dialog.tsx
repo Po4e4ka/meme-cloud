@@ -27,18 +27,18 @@ export default function MemePreviewDialog({
 
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-5xl bg-black/90 border border-neutral-800 p-4">
+            <DialogContent className="top-0 left-0 h-full w-full max-w-none translate-x-0 translate-y-0 gap-0 rounded-none border-0 bg-black/95 p-0 sm:top-[50%] sm:left-[50%] sm:h-auto sm:w-full sm:max-w-5xl sm:-translate-x-1/2 sm:-translate-y-1/2 sm:gap-4 sm:rounded-lg sm:border sm:border-neutral-800 sm:bg-black/90 sm:p-4">
                 {meme.type === "video" ? (
                     <video
                         src={meme.media_url}
                         controls
-                        className="w-full max-h-[80vh] object-contain rounded-lg bg-black"
+                        className="h-full w-full object-contain bg-black sm:h-auto sm:max-h-[80vh] sm:rounded-lg"
                     />
                 ) : (
                     <img
                         src={meme.media_url}
                         alt={meme.title}
-                        className="w-full max-h-[80vh] object-contain rounded-lg bg-black"
+                        className="h-full w-full object-contain bg-black sm:h-auto sm:max-h-[80vh] sm:rounded-lg"
                     />
                 )}
 

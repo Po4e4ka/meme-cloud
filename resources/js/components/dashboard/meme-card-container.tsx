@@ -35,8 +35,8 @@ export default function MemeCardContainer({ memes }: MemeCardContainerProps) {
     const activeMeme = activeIndex !== null ? memes[activeIndex] : null;
 
     return (
-        <div className="flex justify-start p-4">
-            <div className="flex flex-wrap gap-4 w-full">
+        <div className="p-4 sm:p-6">
+            <div className="grid w-full grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
                 {memes.map((meme, index) => (
                     <MemeCard
                         id={meme.id}
