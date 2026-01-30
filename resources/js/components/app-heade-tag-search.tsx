@@ -185,7 +185,7 @@ export function TagSearchInput() {
                 onMouseDown={(event) => event.preventDefault()}
             >
                 <div className="rounded-2xl border border-border/70 bg-background p-2 shadow-lg">
-                    <div className="text-xs text-muted-foreground px-2 py-1">Возможные хуеги</div>
+                    <div className="text-xs text-muted-foreground px-2 py-1">Возможные теги</div>
                     <div className="flex flex-wrap gap-2 px-2 pb-2">
                         {suggestions.map((tag, index) => (
                             <button
