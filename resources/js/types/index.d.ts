@@ -1,5 +1,6 @@
 import { LucideIcon } from 'lucide-react';
 import type { Config } from 'ziggy-js';
+import { type ReactNode } from 'react';
 
 export interface Auth {
     user: User;
@@ -45,5 +46,6 @@ export interface User {
 export interface HeaderAction {
     Icon: LucideIcon;
     isActive: boolean;
-    target_url: any;
+    target_url?: string|null;
+    node?: () => ReactNode;
 }

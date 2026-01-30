@@ -1,0 +1,6 @@
+import{j as e}from"./app-B9Umk_uZ.js";import{c as a}from"./createLucideIcon-IkC2iEO4.js";/* empty css            *//**
+ * @license lucide-react v0.475.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const s=[["path",{d:"M12 20h.01",key:"zekei9"}],["path",{d:"M8.5 16.429a5 5 0 0 1 7 0",key:"1bycff"}],["path",{d:"M5 12.859a10 10 0 0 1 5.17-2.69",key:"1dl1wf"}],["path",{d:"M19 12.859a10 10 0 0 0-2.007-1.523",key:"4k23kn"}],["path",{d:"M2 8.82a15 15 0 0 1 4.177-2.643",key:"1grhjp"}],["path",{d:"M22 8.82a15 15 0 0 0-11.288-3.764",key:"z3jwby"}],["path",{d:"m2 2 20 20",key:"1ooewy"}]],t=a("WifiOff",s);function m(){return e.jsx("div",{className:"mx-4 mb-4 rounded-2xl border border-amber-200/70 bg-amber-50 px-4 py-3 text-amber-900 shadow-sm",children:e.jsxs("div",{className:"flex items-center gap-3",children:[e.jsx("span",{className:"flex h-9 w-9 items-center justify-center rounded-full bg-amber-100 text-amber-700",children:e.jsx(t,{className:"h-5 w-5"})}),e.jsxs("div",{className:"text-sm",children:[e.jsx("div",{className:"font-semibold",children:"Нет соединения"}),e.jsx("div",{className:"text-amber-800/80",children:"Показываем сохранённые мемы и медиа."})]})]})})}export{m as default};
