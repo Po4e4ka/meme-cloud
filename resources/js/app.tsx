@@ -25,6 +25,8 @@ createInertiaApp({
 });
 
 initializeTheme();
-void registerSW({
-    immediate: true,
-});
+if (!import.meta.env.DEV) {
+    void registerSW({
+        immediate: true,
+    });
+}
